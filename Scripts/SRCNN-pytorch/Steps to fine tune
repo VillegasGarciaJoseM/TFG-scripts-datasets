@@ -1,0 +1,45 @@
+## Creamos el entorno virtual
+
+python -m venv venv
+source venv/bin/activate
+
+## Instalamos los paquetes desde el requirements.txt
+
+pip install -r requirements.txt
+
+## Creamos el dataset para el entrenamiento
+
+python prepare.py --images-dir "/home/josele/Escritorio/TFG/datasets/Texturas_2048/cropped_images/" --output-path "/home/josele/Escritorio/TFG/reporitorios/SRCNN-pytorch/data/textures-dataset" --patch-size 33 --stride 14 --scale 2
+# python3 prepare.py --images-dir /data/jmvillegas/textures/Train/HR  --output-path "/home/jmvillegas/SRCNN-pytorch/data/textures-dataset" --patch-size 33 --stride 14 --scale 4
+
+## Probar primero con estos patch y stride, si no deja, bajar el patch y subir el stride.
+
+## Creamos el dataset para la evaluación
+
+python prepare.py --images-dir "/home/josele/Escritorio/TFG/datasets/Texturas_2048/cropped_images_light/Test/" --output-path "/home/josele/Escritorio/TFG/reporitorios/SRCNN-pytorch/data/textures-dataset-eval" --patch-size 33 --stride 14 --scale 4 --eval
+# python3 prepare.py --images-dir /data/jmvillegas/textures/Test/HR/ --output-path /home/jmvillegas/SRCNN-pytorch/data/textures-dataset-eval --patch-size 33 --stride 14 --scale 4 --eval
+# python3 prepare.py --images-dir /data/jmvillegas/validation/textures-validation/reshaped/hr/ --output-path /home/jmvillegas/SRCNN-pytorch/data/alot-dataset-eval --patch-size 33 --stride 14 --scale 4 --eval
+
+## Iniciamos el script de fine tune
+
+python fine-tuning.py
+    --train-file "/home/josele/Escritorio/TFG/reporitorios/SRCNN-pytorch/data/textures-dataset.h5"
+    --eval-file "/home/josele/Escritorio/TFG/reporitorios/SRCNN-pytorch/data/textures-dataset-eval.h5"
+    --outputs-dir "/home/josele/Escritorio/TFG/reporitorios/SRCNN-pytorch/outputs"
+    --weights-file "/home/josele/Escritorio/TFG/reporitorios/SRCNN-pytorch/pre-trained/srcnn_x2.pth"
+    --scale 2
+    --lr 1e-4
+    --batch-size 16
+    --num-epochs 20
+    --num-workers 8
+    --seed 123
+
+# python3 fine-tuning.py    --train-file "/home/jmvillegas/SRCNN-pytorch/data/textures-dataset"    --eval-file "/home/jmvillegas/SRCNN-pytorch/data/textures-dataset-eval"    --outputs-dir "/home/jmvillegas/SRCNN-pytorch/outputs"    --weights-file "/home/jmvillegas/SRCNN-pytorch/pre-trained/srcnn_x4.pth"    --scale 4    --lr 1e-4    --batch-size 16    --num-epochs 10    --num-workers 8    --seed 123
+# SRCNN_alot_fine-tuned: python3 fine-tuning.py --train-file "/home/jmvillegas/SRCNN-pytorch/data/alot-dataset"    --eval-file "/home/jmvillegas/SRCNN-pytorch/data/alot-dataset-eval"    --outputs-dir "/home/jmvillegas/SRCNN-pytorch/outputs"    --weights-file "/home/jmvillegas/SRCNN-pytorch/pre-trained/srcnn_x4.pth"    --scale 4    --lr 1e-6    --batch-size 16    --num-epochs 1    --num-workers 8    --seed 123
+
+
+##  Test
+
+python3 test.py --weights-file /home/jmvillegas/ --image-file --scale
+
+#   python3 test.py --weights-file /home/jmvillegas/SRCNN-pytorch/outputs/x4/epoch_97.pth --image-file  --scale 4

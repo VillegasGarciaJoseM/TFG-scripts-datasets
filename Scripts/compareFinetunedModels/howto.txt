@@ -1,0 +1,4 @@
+basic command:
+
+python evaluate.py {directorio_imagenes_1} {directorio_imagenes_2}
+

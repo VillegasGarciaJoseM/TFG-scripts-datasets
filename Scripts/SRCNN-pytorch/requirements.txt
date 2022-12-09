@@ -1,0 +1,6 @@
+Numpy==1.15.4
+Pillow==5.4.1
+h5py==2.8.0
+tqdm==4.30.0
+scikit-image
+torch==1.10.1
